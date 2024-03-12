@@ -19,10 +19,11 @@ import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { CreateTeacherDto } from 'src/teacher/dto/create-teacher.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
+import { RolesGuard } from 'src/guards/roles.guard';
 
 @ApiTags('Group')
 @ApiBearerAuth()
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, RolesGuard)
 @Controller('group')
 export class GroupController {
   constructor(private readonly groupService: GroupService) {}

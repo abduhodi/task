@@ -27,10 +27,11 @@ import { CreateStudentDto } from './dto/create-student.dto';
 import { LoginTeacherDto } from 'src/teacher/dto/login-teacher.dto';
 import { UpdateTeacherDto } from 'src/teacher/dto/update-teacher.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
+import { RolesGuard } from 'src/guards/roles.guard';
 
 @ApiTags('Student')
 @ApiBearerAuth()
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, RolesGuard)
 @Controller('student')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}

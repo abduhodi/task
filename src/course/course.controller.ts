@@ -18,10 +18,11 @@ import { AuthGuard } from 'src/guards/auth.guard';
 import { Public } from 'src/decorators/set-public.decorator';
 import { Roles } from 'src/decorators/role.decorator';
 import { Role } from 'src/enums/role.enum';
+import { RolesGuard } from 'src/guards/roles.guard';
 
 @ApiTags('Course')
 @ApiBearerAuth()
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, RolesGuard)
 @Controller('course')
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}

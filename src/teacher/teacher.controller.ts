@@ -28,10 +28,11 @@ import { UpdateTeacherDto } from './dto/update-teacher.dto';
 import { LoginTeacherDto } from './dto/login-teacher.dto';
 import { FileUploadDto } from './dto/file-upload.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { RolesGuard } from 'src/guards/roles.guard';
 
 @ApiTags('Teacher')
 @ApiBearerAuth()
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, RolesGuard)
 @Controller('teacher')
 export class TeacherController {
   constructor(private readonly teacherService: TeacherService) {}
