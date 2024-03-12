@@ -24,8 +24,7 @@ import { Roles } from 'src/decorators/role.decorator';
 import { Role } from 'src/enums/role.enum';
 import { StudentService } from './student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
-import { LoginTeacherDto } from 'src/teacher/dto/login-teacher.dto';
-import { UpdateTeacherDto } from 'src/teacher/dto/update-teacher.dto';
+import { LoginDto } from 'src/teacher/dto/login.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { RolesGuard } from 'src/guards/roles.guard';
 
@@ -46,7 +45,7 @@ export class StudentController {
   @ApiOperation({ summary: 'Login Student' })
   @Public()
   @Post('login')
-  loginStudent(@Body() loginStudentDto: LoginTeacherDto) {
+  loginStudent(@Body() loginStudentDto: LoginDto) {
     return this.studentService.loginStudent(loginStudentDto);
   }
 

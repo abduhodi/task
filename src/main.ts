@@ -2,6 +2,10 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { GlobalExceptionFilter } from 'src/filters/exception.filter';
+import * as bcrypt from 'bcrypt';
+
+console.log('username:', 'admin');
+console.log('password:', bcrypt.hashSync('admin', 7));
 
 async function bootstrap() {
   const port = process.env.PORT || 3300;
@@ -24,4 +28,5 @@ async function bootstrap() {
     console.log(`${process.env.BASE_URL}:${process.env.PORT}/api/docs`),
   );
 }
+
 bootstrap();

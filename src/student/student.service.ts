@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Role } from 'src/enums/role.enum';
 import { Student } from './models/student.model';
 import { CreateTeacherDto } from 'src/teacher/dto/create-teacher.dto';
-import { LoginTeacherDto } from 'src/teacher/dto/login-teacher.dto';
+import { LoginDto } from 'src/teacher/dto/login.dto';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 
@@ -37,7 +37,7 @@ export class StudentService {
     return newStudent;
   }
 
-  async loginStudent(loginStudentDto: LoginTeacherDto) {
+  async loginStudent(loginStudentDto: LoginDto) {
     const { username, password } = loginStudentDto;
     const user = await this.studentModel.findOne({ where: { username } });
     if (!user) {

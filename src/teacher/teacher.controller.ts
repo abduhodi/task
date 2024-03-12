@@ -10,6 +10,7 @@ import {
   Put,
   UploadedFile,
   UseInterceptors,
+  Req,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -25,7 +26,7 @@ import { Role } from 'src/enums/role.enum';
 import { TeacherService } from './teacher.service';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { UpdateTeacherDto } from './dto/update-teacher.dto';
-import { LoginTeacherDto } from './dto/login-teacher.dto';
+import { LoginDto } from './dto/login.dto';
 import { FileUploadDto } from './dto/file-upload.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { RolesGuard } from 'src/guards/roles.guard';
@@ -51,6 +52,7 @@ export class TeacherController {
     type: FileUploadDto,
   })
   @UseInterceptors(FileInterceptor('photo'))
+  @Roles(Role.ADMIN)
   @Post('upload-photo')
   uploadTeacherPhoto(@UploadedFile() photo: Express.Multer.File) {
     return this.teacherService.uploadTeacherPhoto(photo);
@@ -59,14 +61,22 @@ export class TeacherController {
   @ApiOperation({ summary: 'Login Teacher' })
   @Public()
   @Post('login')
-  loginTeacher(@Body() loginTeacherDto: LoginTeacherDto) {
-    return this.teacherService.loginTeacher(loginTeacherDto);
+  loginTeacher(@Body() LoginDto: LoginDto) {
+    return this.teacherService.loginTeacher(LoginDto);
   }
 
   @ApiOperation({ summary: 'Get all Teachers' })
+  @Roles(Role.ADMIN)
   @Get('all')
   findAllTeachers() {
     return this.teacherService.findAllTeachers();
+  }
+
+  @ApiOperation({ summary: 'Get Teacher Groups' })
+  @Roles(Role.TEACHER)
+  @Get('get-groups')
+  findTeacherGroups(@Req() request: any) {
+    return this.teacherService.findTeacherGroups(request);
   }
 
   @ApiOperation({ summary: 'Get single Teacher' })

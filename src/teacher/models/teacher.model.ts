@@ -1,4 +1,5 @@
 import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
+import { Group } from 'src/group/models/group.model';
 
 @Table({})
 export class Teacher extends Model {
@@ -25,6 +26,6 @@ export class Teacher extends Model {
   @Column({ type: DataType.STRING, unique: true, allowNull: false })
   password: string;
 
-  // @HasMany(() => Group)
-  // groups: Group[];
+  @HasMany(() => Group)
+  groups: Group[];
 }

@@ -9,6 +9,7 @@ import { TeacherModule } from './teacher/teacher.module';
 import { GroupModule } from './group/group.module';
 import { StudentModule } from './student/student.module';
 import { TaskModule } from './task/task.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { TaskModule } from './task/task.module';
     GroupModule,
     StudentModule,
     TaskModule,
+    AdminModule,
   ],
   controllers: [],
   providers: [],
