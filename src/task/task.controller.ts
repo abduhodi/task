@@ -41,6 +41,7 @@ export class TaskController {
   }
 
   @ApiOperation({ summary: 'Get single Task' })
+  @Public()
   @Get(':id')
   findOneTask(@Param('id', ParseIntPipe) id: number) {
     return this.taskService.findOneTask(id);
