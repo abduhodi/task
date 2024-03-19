@@ -8,16 +8,20 @@ import { CreateTeacherDto } from 'src/teacher/dto/create-teacher.dto';
 import { LoginDto } from 'src/teacher/dto/login.dto';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
+import { TaskService } from '../task/task.service';
+import { GroupService } from 'src/group/group.service';
 
 @Injectable()
 export class StudentService {
   constructor(
     @InjectModel(Student) private readonly studentModel: typeof Student,
     private readonly jwtService: JwtService,
+    private readonly taskService: TaskService,
+    private readonly groupService: GroupService,
   ) {}
 
   async createStudent(createStudentDto: CreateStudentDto) {
-    const { username, password } = createStudentDto;
+    const { username, password, group_id } = createStudentDto;
 
     const oldStudent = await this.studentModel.findOne({
       where: {
@@ -26,6 +30,11 @@ export class StudentService {
     });
     if (oldStudent) {
       throw new BadRequestException('Student exist with this username');
+    }
+
+    const group = await this.groupService.findOneGroup(group_id);
+    if (!group) {
+      throw new BadRequestException('Group does not exist');
     }
 
     const hashedPassword = await bcrypt.hash(password, 7);
@@ -72,6 +81,16 @@ export class StudentService {
     }
     return student;
   }
+  async getMyTask(accessToken: string) {
+    const payload = this.jwtService.decode(accessToken);
+
+    const student = await this.studentModel.findByPk(payload.id);
+    if (!student) {
+      throw new BadRequestException('Student not found');
+    }
+    const tasks = await this.taskService.findMyTasks(student.group_id);
+    return tasks;
+  }
 
   async updateStudent(student_id: number, updateStudentDto: UpdateStudentDto) {
     const student = await this.studentModel.findByPk(student_id);
@@ -83,12 +102,26 @@ export class StudentService {
       enumerable: false,
     });
 
+    const { username } = updateStudentDto;
+
+    if (username) {
+      const oldStudent = await this.studentModel.findOne({
+        where: { username },
+      });
+      if (oldStudent && oldStudent.student_id !== student.student_id) {
+        throw new BadRequestException('Username exists');
+      }
+      Object.defineProperty(updateStudentDto, 'username', {
+        enumerable: false,
+      });
+    }
+
     const updated = await this.studentModel.update(updateStudentDto, {
       where: { student_id },
       returning: true,
     });
 
-    return updated;
+    return updated[1][0];
   }
 
   async removeStudent(student_id: number) {

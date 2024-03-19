@@ -27,7 +27,7 @@ export async function uploadFile(file: any): Promise<string> {
         }
       },
     );
-    const base_uri = `${process.env.BASE_URI}:${process.env.PORT}/api`;
+    const base_uri = `${process.env.BASE_URL}:${process.env.PORT}/api/`;
     return base_uri + filename;
   } catch (error) {
     console.log(error);

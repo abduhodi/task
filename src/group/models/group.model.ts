@@ -8,6 +8,7 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { Course } from 'src/course/models/course.model';
+import { Task } from 'src/task/models/task.model';
 import { Teacher } from 'src/teacher/models/teacher.model';
 
 @Table({})
@@ -31,8 +32,8 @@ export class Group extends Model {
   @Column({ type: DataType.INTEGER, allowNull: false })
   course_id: number;
 
-  // @HasMany(() => Task)
-  // groups: Task[];
+  @HasMany(() => Task)
+  tasks: Task[];
 
   @BelongsTo(() => Course, { onDelete: 'CASCADE' })
   course: Course;

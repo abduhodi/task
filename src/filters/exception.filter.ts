@@ -8,6 +8,7 @@ import {
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
   catch(exception: Error, host: ArgumentsHost) {
+    console.log(exception);
     const response = host.switchToHttp().getResponse();
     const status =
       exception instanceof HttpException ? exception.getStatus() : 500;

@@ -27,6 +27,7 @@ import { CreateStudentDto } from './dto/create-student.dto';
 import { LoginDto } from 'src/teacher/dto/login.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { RolesGuard } from 'src/guards/roles.guard';
+import { StorageGetter } from '../decorators/storageGetter-cookie.decorator.ts';
 
 @ApiTags('Student')
 @ApiBearerAuth()
@@ -55,12 +56,20 @@ export class StudentController {
     return this.studentService.findAllStudents();
   }
 
+  @ApiOperation({ summary: 'get my task' })
+  @Roles(Role.STUDENT)
+  @Get('my-task')
+  getMyTask(@StorageGetter() accessToken: string) {
+    return this.studentService.getMyTask(accessToken);
+  }
+  
   @ApiOperation({ summary: 'Get single Student' })
   @Roles(Role.ADMIN)
   @Get(':id')
   findOneStudent(@Param('id', ParseIntPipe) id: number) {
     return this.studentService.findOneStudent(id);
   }
+
 
   @ApiOperation({ summary: 'Update Student' })
   @Roles(Role.ADMIN)

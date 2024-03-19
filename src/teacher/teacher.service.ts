@@ -34,6 +34,7 @@ export class TeacherService {
     }
 
     const hashedPassword = await bcrypt.hash(createTeacherDto.password, 7);
+    console.log({ ...createTeacherDto, password: hashedPassword });
     const newTeacher = await this.teacherModel.create({
       ...createTeacherDto,
       password: hashedPassword,
@@ -97,6 +98,7 @@ export class TeacherService {
         model: Group,
         as: 'groups',
         attributes: ['group_id', 'group_name'],
+        include: ['tasks'],
       },
     });
 
@@ -117,12 +119,26 @@ export class TeacherService {
       enumerable: false,
     });
 
+    const { username } = updateTeacherDto;
+
+    if (username) {
+      const oldTeacher = await this.teacherModel.findOne({
+        where: { username },
+      });
+      if (oldTeacher && oldTeacher.teacher_id !== teacher.teacher_id) {
+        throw new BadRequestException('Username exists');
+      }
+      Object.defineProperty(updateTeacherDto, 'username', {
+        enumerable: false,
+      });
+    }
+
     const updated = await this.teacherModel.update(updateTeacherDto, {
       where: { teacher_id },
       returning: true,
     });
 
-    return updated;
+    return updated[1][0];
   }
 
   async removeTeacher(teacher_id: number) {

@@ -46,7 +46,9 @@ export class GroupService {
   }
 
   async findOneGroup(group_id: number) {
-    const group = await this.groupModel.findByPk(group_id);
+    const group = await this.groupModel.findByPk(group_id, {
+      include: ['tasks'],
+    });
     if (!group) {
       throw new BadRequestException('Group not found');
     }

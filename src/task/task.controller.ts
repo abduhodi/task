@@ -18,6 +18,7 @@ import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { RolesGuard } from 'src/guards/roles.guard';
+import { StorageGetter } from '../decorators/storageGetter-cookie.decorator.ts';
 
 @ApiTags('Task')
 @ApiBearerAuth()
@@ -29,8 +30,11 @@ export class TaskController {
   @ApiOperation({ summary: 'Create new Task' })
   @Roles(Role.ADMIN, Role.TEACHER)
   @Post('create')
-  createTask(@Body() createTaskDto: CreateTaskDto) {
-    return this.taskService.createTask(createTaskDto);
+  createTask(
+    @Body() createTaskDto: CreateTaskDto,
+    @StorageGetter() accessToken: string,
+  ) {
+    return this.taskService.createTask(createTaskDto,accessToken);
   }
 
   @ApiOperation({ summary: 'Get all Tasks' })

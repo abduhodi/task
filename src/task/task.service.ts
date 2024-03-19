@@ -4,16 +4,20 @@ import { Task } from './models/task.model';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GroupService } from 'src/group/group.service';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { JwtService } from '@nestjs/jwt';
+import { doesNotMatch } from 'assert';
 
 @Injectable()
 export class TaskService {
   constructor(
     @InjectModel(Task) private readonly taskModel: typeof Task,
     private readonly groupService: GroupService,
+    private readonly jwtService: JwtService,
   ) {}
 
-  async createTask(createTaskDto: CreateTaskDto) {
+  async createTask(createTaskDto: CreateTaskDto, accessToken: string) {
     const { task_title, group_id } = createTaskDto;
+    const payload = this.jwtService.decode(accessToken);
 
     const oldTask = await this.taskModel.findOne({
       where: {
@@ -29,13 +33,26 @@ export class TaskService {
       throw new BadRequestException('Group does not exist with this name');
     }
 
-    const newTask = await this.taskModel.create({ task_title, group_id });
-
-    return newTask;
+    try {
+      if (group.teacher_id == payload.id) {
+        const newTask = await this.taskModel.create({ task_title, group_id });
+        return newTask;
+      } else {
+        throw new BadRequestException('You can only give task to your groups');
+      }
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   async findAllTasks() {
     return this.taskModel.findAll({});
+  }
+  async findMyTasks(group_id: number) {
+    return this.taskModel.findAll({
+      where: { group_id: group_id },
+      order: [['createdAt', 'DESC']],
+    });
   }
 
   async findOneTask(task_id: number) {
@@ -59,7 +76,7 @@ export class TaskService {
       returning: true,
     });
 
-    return updated;
+    return updated[1][0];
   }
 
   async removeTask(task_id: number) {

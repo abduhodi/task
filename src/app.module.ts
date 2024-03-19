@@ -33,7 +33,7 @@ import { AdminModule } from './admin/admin.module';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'data'),
       serveRoot: '/api',
-      exclude: ['index.html'],
+      // exclude: ['index.html'],
     }),
     CourseModule,
     TeacherModule,
