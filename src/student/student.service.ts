@@ -65,7 +65,7 @@ export class StudentService {
     return {
       firstname: user.firstname,
       username: user.username,
-      role: Role.TEACHER,
+      role: Role.STUDENT,
       token,
     };
   }
